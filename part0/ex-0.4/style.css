@@ -1,0 +1,13 @@
+.notes{
+    padding: 10px;
+    border: solid black 1px;
+    border-radius: 10px;
+}
+
+.notes h1{
+    line-height: 0%;
+}
+
+.notes li{
+    color: blue;
+}
