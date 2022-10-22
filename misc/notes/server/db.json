@@ -1,0 +1,16 @@
+{
+  "notes": [
+    {
+      "content": "HTML is easy",
+      "date": "2022-10-20T12:15:11.631Z",
+      "important": "true",
+      "id": 1
+    },
+    {
+      "content": "REACT is hard",
+      "date": "2022-10-20T12:15:20.973Z",
+      "important": "false",
+      "id": 2
+    }
+  ]
+}
