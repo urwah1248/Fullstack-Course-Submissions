@@ -9,7 +9,7 @@ export default function WeatherInfo({country}) {
     const [weather, setWeather] = useState(WeatherData)
     useEffect(() => {
     axios
-        .get(`https://api.openweathermap.org/data/2.5/weather?q=${country.capital},${country.name}&appid=fac621fb6e8e4a7d426c8ff30949e1f5`)
+        .get(`https://api.openweathermap.org/data/2.5/weather?q=${country.capital},${country.name}&appid=${api_key}`)
         .then(response => {
         setWeather(response.data)
         console.log(response.data);
