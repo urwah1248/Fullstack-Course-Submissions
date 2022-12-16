@@ -6,6 +6,7 @@ const dataJson = require('./persons.json')
 
 let persons = dataJson
 
+app.use(express.static('build'))
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
