@@ -3,7 +3,7 @@ const blogs = [
     {
         id:"32145",
         title:"Design Patterns",
-        author:"Hamza Ilyas",
+        author:"Muhammad Urwah",
         url:"https://designpatterns.com/",
         likes:3
     },
@@ -77,6 +77,32 @@ describe('Favorite Blog', () => {
     test('in a list of multiple blogs', () => {
         const maximum = listHelper.favoriteBlog(blogs)
         const favorite = blogs.find(blog => blog.likes === maximum)
-        expect(favorite).toEqual(blogs[2])
+        expect(favorite).toEqual(blogs[1])
     })
 })
+
+describe('Author with most blogs ',() => {
+    test('in an empty list', ()=>{
+        const result = listHelper.mostBlogs([])
+
+        expect(result).toEqual({})
+    })
+
+    test('in a list of single blog', ()=>{
+        const result = listHelper.mostBlogs([blogs[0]])
+
+        expect(result).toEqual({
+            author: blogs[0].author,
+            blogs: 1
+        })
+    })
+
+    test('in a list of multiple blogs', ()=>{
+        const result = listHelper.mostBlogs(blogs)
+
+        expect(result).toEqual({
+            author: "Muhammad Urwah",
+            blogs: 2
+        })
+    })
+} )
