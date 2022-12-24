@@ -106,3 +106,29 @@ describe('Author with most blogs ',() => {
         })
     })
 } )
+
+describe('Author with most likes, ',() => {
+    test('in an empty list', ()=>{
+        const result = listHelper.mostLikes([])
+
+        expect(result).toEqual({})
+    })
+
+    test('in a list of single blog', ()=>{
+        const result = listHelper.mostLikes([blogs[0]])
+
+        expect(result).toEqual({
+            author: blogs[0].author,
+            likes: 3
+        })
+    })
+
+    test('in a list of multiple blogs', ()=>{
+        const result = listHelper.mostLikes(blogs)
+
+        expect(result).toEqual({
+            author: "Muhammad Urwah",
+            likes: 11+3
+        })
+    })
+} )
