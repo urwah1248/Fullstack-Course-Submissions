@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 describe("<Blog/>", () => {
+    //Ex 5.13
     test("Blog Rendering Title and Author without rendering username or likes.", () => {
         const blog = {title: "New Blog", author: "New Author", user:{name:"urwah"}}
 
@@ -21,6 +22,7 @@ describe("<Blog/>", () => {
         expect(getComputedStyle(hidden).display).toBe('none')
     })
 
+    //Ex 5.14
     test("Blog's URL and Likes being shown after clicking toggle", async () => {
         const blog = {title: "New Blog", author: "New Author", url: "/asdfhsdg",likes: 10, user:{name:"urwah"}}
         
@@ -37,6 +39,7 @@ describe("<Blog/>", () => {
         expect(getComputedStyle(hidden).display).toBe('block')//After Toggle
     })
 
+    //Ex 5.15
     test("Liking Twice calls the Mock Twice", async () => {
         const blog = {title: "New Blog", author: "New Author", url: "/asdfhsdg",likes: 10, user:{name:"urwah"}}
         

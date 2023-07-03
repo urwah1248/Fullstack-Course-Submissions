@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 describe("<BlogForm/>", () => {
+    //Ex 5.16
     test("Checking Form submit", async () => {
         const mockHandler = jest.fn()
         const {container} = render(<AddBlogForm addBlog={mockHandler}/>)
