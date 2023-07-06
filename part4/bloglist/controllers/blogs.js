@@ -1,7 +1,5 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
-const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', (request, response) => {
   Blog
@@ -13,23 +11,16 @@ blogsRouter.get('/', (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
     const {title, author, url, likes} = request.body
-    const token = request.token
-    console.log(token);
 
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid' })
-    }
+    const user = request.user
 
     if(request.body.title==undefined || request.body.url==undefined){
       response.status(400).send("Missing Title or URL")
       return
     }
 
-    const user = await User.findById(decodedToken.id)
-
     const blog = new Blog({
-      title, 
+      title,
       author,
       url,
       likes,
@@ -38,7 +29,7 @@ blogsRouter.post('/', async (request, response) => {
 
     const savedBlog = await blog
       .save()
-    
+
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
     response.status(201).json(savedBlog)
@@ -51,34 +42,49 @@ blogsRouter.get('/:id', (request, response) => {
   })
 })
 
-blogsRouter.delete('/:id', (request, response) => {
-  Blog.findByIdAndRemove(request.params.id)
+blogsRouter.delete('/:id', async (request, response) => {
+  const user = request.user
+
+  if(user.blogs.includes(request.params.id)){
+    Blog.findByIdAndRemove(request.params.id)
     .then(() => {
-      response.status(204).send(request.params.id+" is deleted")
+      response.status(204).json({message: `Blog ${request.params.id} is deleted successfully.`})
     })
     .catch(() => response.status(400))
+  } else {
+    response.json({error: "This blog doesnt belong to the current user."})
+  }
+
 })
 
 blogsRouter.put('/:id', async (request, response) => {
+  const user = request.user
 
-  try {
-    if(request.body.title=="" || request.body.url==""){
-      response.status(400).send("Title and URL cannot be empty")
-      return
-    }
-    // Find the blog post by ID and update its properties
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, {
-      new: true, // Return the updated blog post
-    });
+  if (user.blogs.includes(request.params.id)) {
+    try {
+      if (request.body.title === '' || request.body.url === '') {
+        return response.status(400).send('Title and URL cannot be empty');
+      }
 
-    if (!updatedBlog) {
-      return response.status(404).json({ error: 'Blog post not found' });
+      // Find the blog post by ID and update its properties
+      const updatedBlog = await Blog.findByIdAndUpdate(
+        request.params.id,
+        request.body,
+        { new: true }
+      );
+
+      if (!updatedBlog) {
+        return response.status(404).json({ error: 'Blog post not found' });
+      }
+
+      response.json(updatedBlog); // Return the updated blog post
+    } catch (error) {
+      console.error(error);
+      response.status(500).json({ error: 'Internal server error' });
     }
-    response.json(updatedBlog); // Return the updated blog post
-  } catch (error) {
-    console.error(error);
-    response.status(500).json({ error: 'Internal server error' });
+  } else {
+    response.status(403).json({ error: 'This blog does not belong to the current user.' });
   }
-})
+});
 
 module.exports = blogsRouter
