@@ -6,11 +6,15 @@ usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
   if(!(username && password)){
-    response.status(400).send("Username or Password is incorrect")
+    response.status(400).send("Username or Password is missing")
     return
   }
   if(password.length<3){
     response.status(400).send("Minimum length for password is 3")
+    return
+  }
+  if(username.length<3){
+    response.status(400).send("Minimum length for username is 3")
     return
   }
 
