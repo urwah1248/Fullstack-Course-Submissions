@@ -52,11 +52,26 @@ const mostLikes = (blogs) => {
     }
 }
 
+const initialBlogs = [
+    {
+        title: "Use Wordpress with Docker",
+        author: "Muhammad Urwah",
+        url: "/01",
+        likes: 5
+    },
+    {
+        title: "Make an AI website using OpenAI",
+        author: "Muhammad Urwah",
+        url: "/02",
+        likes: 11
+    }
+]
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
     mostBlogs,
-    mostLikes
+    mostLikes,
+    initialBlogs
 }
-  
