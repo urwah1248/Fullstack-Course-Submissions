@@ -3,18 +3,14 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 
 usersRouter.post('/', async (request, response) => {
-  const { username, name, password } = request.body
+  const { username, name, password, blogs } = request.body
 
   if(!(username && password)){
-    response.status(400).send("Username or Password is missing")
+    response.status(400).json({error:"Username or Password is missing"})
     return
   }
-  if(password.length<3){
-    response.status(400).send("Minimum length for password is 3")
-    return
-  }
-  if(username.length<3){
-    response.status(400).send("Minimum length for username is 3")
+  if(password.length<3 || username.length<3){
+    response.status(400).json({error:"Minimum length for username and password is 3"})
     return
   }
 
@@ -25,6 +21,7 @@ usersRouter.post('/', async (request, response) => {
     username,
     name,
     passwordHash,
+    blogs
   })
 
   const savedUser = await user.save()
@@ -33,7 +30,7 @@ usersRouter.post('/', async (request, response) => {
 })
 
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
+  const users = await User.find({}).populate('blogs')
   response.json(users)
 })
 
