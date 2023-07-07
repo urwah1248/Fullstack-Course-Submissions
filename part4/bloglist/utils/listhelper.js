@@ -57,13 +57,26 @@ const initialBlogs = [
         title: "Use Wordpress with Docker",
         author: "Muhammad Urwah",
         url: "/01",
-        likes: 5
+        likes: 5,
+        userId: "64a7f3410e5058f73108a11f"
     },
     {
         title: "Make an AI website using OpenAI",
         author: "Muhammad Urwah",
         url: "/02",
-        likes: 11
+        likes: 11,
+        userId: "64a7f3410e5058f73108a11f"
+    }
+]
+
+const initialUsers = [
+    {
+        _id:{$oid:"64a7e85369c9ccbe29ba850c"},
+        username:"validuser",
+        name:"Valid Name",
+        passwordHash:"$2b$10$CYJQXRAKDUWx.dXz0FmJXOn9d1uGl610ogh8II/5lsD/PEXVcDTkO",
+        blogs:[{$oid:"64a7ea71507568f857f7a5f8"}],
+        __v:{$numberInt:1}
     }
 ]
 
@@ -73,5 +86,6 @@ module.exports = {
     favoriteBlog,
     mostBlogs,
     mostLikes,
-    initialBlogs
+    initialBlogs,
+    initialUsers
 }

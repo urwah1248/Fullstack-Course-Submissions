@@ -3,7 +3,18 @@ const app = require('../app')
 const api = require('supertest')(app)
 const Blog = require('../models/blog')
 const listhelper = require('../utils/listhelper')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
+beforeAll(async () => {
+    await User.deleteMany({});
+    const data = {
+        username: "newuser",
+        name: "New User",
+        password: "newpassword"
+    }
+    const userr = await api.post('/api/users').send(data)
+})
 beforeEach(async () => {
     // Clear the database before each test
     await Blog.deleteMany({});
@@ -14,6 +25,15 @@ afterAll(async () => {
     // Close the Mongoose connection after all tests
     await mongoose.connection.close();
 });
+
+const generateToken = async () => {
+    const user = {
+        username: "newuser",
+        password: "newpassword"
+    }
+    const res = await api.post("/api/login").send(user)
+    return res.body.token
+}
 
 describe('When there is initially some blogs saved, ', () => {
 
@@ -34,32 +54,56 @@ describe('When there is initially some blogs saved, ', () => {
     //Exercise 4.13
     test('Deletes a blog post', async () => {
         // Make a POST request to create the new blog post
-        const blogResponse = await api
-            .get('/api/blogs')
+        const token = await generateToken()
+        const newBlogPost = {
+            title: 'Test Blog Post',
+            url: '/1234',
+            likes: 10,
+            author: "Muhammad Urwah"
+        };
 
-        const blogPostId = blogResponse.body[0].id;
+        const blog = await api
+            .post('/api/blogs')
+            .send(newBlogPost)
+            .set("Authorization", `Bearer ${token}`)
 
-        // Make a DELETE request to delete the blog post
+        const blogPostId = blog.body.id
+
+        // // Make a DELETE request to delete the blog post
         const deleteResponse = await api
             .delete(`/api/blogs/${blogPostId}`)
+            .set("Authorization", `Bearer ${token}`)
             .expect(204);
 
-        // Verify that the blog post no longer exists in the system
+        // // Verify that the blog post no longer exists in the system
         const deletedBlogPost = await Blog.findById(blogPostId);
         expect(deletedBlogPost).toBeNull();
     })
 
     //Exercise 4.14
     test("Updates a blog", async () => {
-        const response = await api.get('/api/blogs');
-        const blogId = response.body[0].id;
+        const token = await generateToken()
+        const newBlogPost = {
+            title: 'Test Blog Post',
+            url: '/1234',
+            likes: 10,
+            author: "Muhammad Urwah"
+        };
+
+        const blog = await api
+            .post('/api/blogs')
+            .send(newBlogPost)
+            .set("Authorization", `Bearer ${token}`)
+
+        const blogPostId = blog.body.id
 
         const updatedBlog = {
           title: "Wordpress using Docker Desktop"
         };
 
         const updateResponse = await api
-          .put(`/api/blogs/${blogId}`)
+          .put(`/api/blogs/${blogPostId}`)
+          .set("Authorization", `Bearer ${token}`)
           .send(updatedBlog)
           .expect(200);
 
@@ -71,16 +115,21 @@ describe('When there is initially some blogs saved, ', () => {
 describe('When adding new blogs using, ', () => {
 //Exercise 4.10
     test('All the data', async () => {
+        const token = await generateToken()
+
         const allBlogs = await api.get('/api/blogs')
         const initialCount = Number(allBlogs.body.length.toString())
         const newBlogPost = {
-        title: 'Test Blog Post',
-        url: '/1234',
+            title: 'Test Blog Post',
+            url: '/1234',
+            likes: 10,
+            author: "Muhammad Urwah"
         };
     
         const response = await api
         .post('/api/blogs')
         .send(newBlogPost)
+        .set("Authorization", `Bearer ${token}`)
         .expect(201)
         .expect('Content-Type', /application\/json/);
     
@@ -96,6 +145,7 @@ describe('When adding new blogs using, ', () => {
 
     //Exercise 4.11
     test('All required data without providing Likes', async () => {
+        const token = await generateToken()
         const newBlogPost = {
             title: 'Test Blog Post',
             url: '/1234',
@@ -103,6 +153,7 @@ describe('When adding new blogs using, ', () => {
 
         const response = await api
             .post('/api/blogs')
+            .set("Authorization", `Bearer ${token}`)
             .send(newBlogPost)
             .expect(201)
 
@@ -112,9 +163,27 @@ describe('When adding new blogs using, ', () => {
 
     //Exercise 4.12
     test('Without required Data', async () => {
+        const token = await generateToken()
         await api
             .post('/api/blogs')
+            .set("Authorization", `Bearer ${token}`)
             .send({likes:50})
             .expect(400)
+    })
+
+    //Ex 4.23
+    test('All the data, Without Token', async () => {
+        const newBlogPost = {
+            title: 'Test Blog Post',
+            url: '/1234',
+            likes: 10,
+            author: "Muhammad Urwah"
+        };
+    
+        await api
+        .post('/api/blogs')
+        .send(newBlogPost)
+        .expect(401)
+        .expect('Content-Type', /application\/json/);
     })
 })

@@ -3,10 +3,10 @@ const User = require("../models/user")
 const jwt = require('jsonwebtoken')
 
 const requestLogger = (request, response, next) => {
-  info('Method:', request.method)
-  info('Path:  ', request.path)
-  info('Body:  ', request.body)
-  info('---')
+  // info('Method:', request.method)
+  // info('Path:  ', request.path)
+  // info('Body:  ', request.body)
+  // info('---')
   next()
 }
 

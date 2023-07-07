@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const { userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', (request, response) => {
   Blog
@@ -9,7 +10,7 @@ blogsRouter.get('/', (request, response) => {
     })
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/',userExtractor, async (request, response) => {
     const {title, author, url, likes} = request.body
 
     const user = request.user
@@ -42,7 +43,7 @@ blogsRouter.get('/:id', (request, response) => {
   })
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id',userExtractor, async (request, response) => {
   const user = request.user
 
   if(user.blogs.includes(request.params.id)){
@@ -52,12 +53,12 @@ blogsRouter.delete('/:id', async (request, response) => {
     })
     .catch(() => response.status(400))
   } else {
-    response.json({error: "This blog doesnt belong to the current user."})
+    response.status(403).json({error: "This blog doesnt belong to the current user."})
   }
 
 })
 
-blogsRouter.put('/:id', async (request, response) => {
+blogsRouter.put('/:id',userExtractor, async (request, response) => {
   const user = request.user
 
   if (user.blogs.includes(request.params.id)) {
