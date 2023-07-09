@@ -1,17 +1,13 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 
-const AddBlogForm = ({setBlogMessage, setBlogs, blogs}) => {
+const AddBlogForm = ({addBlog}) => {
     const [title, setTitle] = useState("")
     const [author, setAuthor] = useState("")
     const [url, setUrl] = useState("")
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({title, author, url});
-        blogService.addBlog({title, author, url})
-        setBlogs([...blogs, {title, author, url}])
-        setBlogMessage({title, author, url})
+        addBlog({title, author, url})
 
         setTitle('');
         setAuthor('');

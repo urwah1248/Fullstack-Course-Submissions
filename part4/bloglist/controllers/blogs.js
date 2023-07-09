@@ -2,12 +2,11 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const { userExtractor } = require('../utils/middleware')
 
-blogsRouter.get('/', (request, response) => {
-  Blog
+blogsRouter.get('/', async (request, response) => {
+  const res = await Blog
     .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
+
+  response.json(res)
 })
 
 blogsRouter.post('/',userExtractor, async (request, response) => {
@@ -25,7 +24,7 @@ blogsRouter.post('/',userExtractor, async (request, response) => {
       author,
       url,
       likes,
-      userId: user._id
+      user: user._id
     })
 
     const savedBlog = await blog
@@ -63,10 +62,6 @@ blogsRouter.put('/:id',userExtractor, async (request, response) => {
 
   if (user.blogs.includes(request.params.id)) {
     try {
-      if (request.body.title === '' || request.body.url === '') {
-        return response.status(400).send('Title and URL cannot be empty');
-      }
-
       // Find the blog post by ID and update its properties
       const updatedBlog = await Blog.findByIdAndUpdate(
         request.params.id,

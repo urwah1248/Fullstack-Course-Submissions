@@ -5,6 +5,7 @@ import { logIn } from './services/login'
 import Login from './components/Login'
 import AddBlogForm from './components/AddBlogForm'
 import BlogNotification from './components/BlogNotification'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -27,6 +28,7 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )
+    console.log(blogs[0]);
   }, [])
 
   const handleLogin = async (event) => {
@@ -55,6 +57,44 @@ const App = () => {
     }
   }
 
+  const addBlog = (blog) => {
+    blogService.addBlog(blog)
+    setBlogs([...blogs, blog])
+    setBlogMessage(blog)
+  }
+
+  const likeBlog = async (blog) => {
+    try{
+      await blogService.likeBlog(blog);
+      const updatedBlogs = blogs.map((b) => {
+        if (b.id === blog.id) {
+          // Increment the like count for the liked blog
+          return { ...b, likes: b.likes + 1 };
+        }
+        return b;
+      });
+      setBlogs(updatedBlogs);
+    }
+    catch{
+      console.log("Error in the function");
+    }
+  }
+
+  const deleteBlog = async (blog) => {
+    try {
+      const confirmed = window.confirm("Are you sure you want to delete this blog?");
+  
+      if (confirmed) {
+        await blogService.deleteBlog(blog);
+        const updatedBlogs = blogs.filter((b) => b.id !== blog.id);
+        setBlogs(updatedBlogs);
+      }
+    } catch (error) {
+      console.log("Error");
+    }
+  };
+  
+
   if(!user){
     return <Login username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin} errorMessage={errorMessage}/>
   }
@@ -66,11 +106,13 @@ const App = () => {
       <h2>{user.name} logged in
         <button onClick={handleLogout}>Logout</button>
       </h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {blogs.sort((a,b)=> b.likes - a.likes).map(blog =>
+        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog}/>
       )}
       <h2>Add New Blog</h2>
-      <AddBlogForm setBlogMessage={setBlogMessage} blogs={blogs} setBlogs={setBlogs}/>
+      <Togglable label="New Blog">
+        <AddBlogForm addBlog={addBlog}/>
+      </Togglable>
     </div>
   )
 }

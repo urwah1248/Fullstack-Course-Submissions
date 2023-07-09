@@ -12,7 +12,10 @@ const blogSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  userId: String
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 blogSchema.set('toJSON', {
@@ -22,6 +25,11 @@ blogSchema.set('toJSON', {
     delete returnedObject.__v
   }
 })
+
+blogSchema.pre(/^find/, function (next) {
+  this.populate('user');
+  next();
+});
 
 const Blog = mongoose.model('Blog', blogSchema)
 
