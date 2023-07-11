@@ -36,5 +36,19 @@ describe("<Blog/>", () => {
 
         expect(getComputedStyle(hidden).display).toBe('block')//After Toggle
     })
+
+    test("Liking Twice calls the Mock Twice", async () => {
+        const blog = {title: "New Blog", author: "New Author", url: "/asdfhsdg",likes: 10, user:{name:"urwah"}}
+        
+        const mockHandler = jest.fn()
+        render(<Blog blog={blog} likeBlog={mockHandler} deleteBlog={mockHandler}/>)
+
+        const likeButton = screen.getByText("Like")
+        const user = userEvent.setup()
+        await user.click(likeButton)
+        await user.click(likeButton)
+
+        expect(mockHandler.mock.calls).toHaveLength(2)
+    })
 })
 
