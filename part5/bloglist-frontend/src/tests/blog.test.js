@@ -14,7 +14,7 @@ describe("<Blog/>", () => {
 
         const title = screen.findAllByText("New Blog")
         const author = screen.findAllByText("New Author")
-        const hidden = container.querySelector('.hidden')
+        const hidden = container.querySelector('.hidden')//div containing URL and Likes
 
         expect(title).toBeDefined()
         expect(author).toBeDefined()
@@ -23,16 +23,18 @@ describe("<Blog/>", () => {
 
     test("Blog's URL and Likes being shown after clicking toggle", async () => {
         const blog = {title: "New Blog", author: "New Author", url: "/asdfhsdg",likes: 10, user:{name:"urwah"}}
-
+        
         const mockHandler = jest.fn()
+        const { container } = render(<Blog blog={blog} likeBlog={mockHandler} deleteBlog={mockHandler}/>)
+        
+        const hidden = container.querySelector('.hidden')//div containing URL and Likes
+        expect(getComputedStyle(hidden).display).toBe('none')//Before Toggle
 
-        const {container} = render(<Blog blog={blog} likeBlog={mockHandler} deleteBlog={mockHandler}/>)
-
-        const button = screen.findAllByText("Like")
+        const toggle = screen.getByText("Show")
         const user = userEvent.setup()
-        await user.click(button)
+        await user.click(toggle)
 
-        expect(mockHandler.mock.calls).toHaveLength(1)
+        expect(getComputedStyle(hidden).display).toBe('block')//After Toggle
     })
 })
 
