@@ -9,8 +9,8 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
   const [blogMessage, setBlogMessage] = useState(null)
@@ -28,29 +28,28 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )
-    console.log(blogs[0]);
-  }, [])
+  }, [blogs])
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
-      const response = await logIn({ username, password });
+      const response = await logIn({ username, password })
       if (response) {
-        setUser(response);
-        window.localStorage.setItem('loggedBloglistUser', JSON.stringify(response));
-        blogService.setToken(response.token);
+        setUser(response)
+        window.localStorage.setItem('loggedBloglistUser', JSON.stringify(response))
+        blogService.setToken(response.token)
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setErrorMessage("Invalid username or password");
+        setErrorMessage('Invalid username or password')
       } else {
-        setErrorMessage("An error occurred during login");
+        setErrorMessage('An error occurred during login')
       }
     }
   }
 
   const handleLogout = e => {
-    e.preventDefault();
+    e.preventDefault()
     if(user){
       window.localStorage.removeItem('loggedBloglistUser')
       window.location.reload()
@@ -65,35 +64,34 @@ const App = () => {
 
   const likeBlog = async (blog) => {
     try{
-      await blogService.likeBlog(blog);
+      await blogService.likeBlog(blog)
       const updatedBlogs = blogs.map((b) => {
         if (b.id === blog.id) {
           // Increment the like count for the liked blog
-          return { ...b, likes: b.likes + 1 };
+          return { ...b, likes: b.likes + 1 }
         }
-        return b;
-      });
-      setBlogs(updatedBlogs);
-    }
-    catch{
-      console.log("Error in the function");
+        return b
+      })
+      setBlogs(updatedBlogs)
+    } catch(error){
+      console.log('Error in the function')
     }
   }
 
   const deleteBlog = async (blog) => {
     try {
-      const confirmed = window.confirm("Are you sure you want to delete this blog?");
-  
+      const confirmed = window.confirm('Are you sure you want to delete this blog?')
+
       if (confirmed) {
-        await blogService.deleteBlog(blog);
-        const updatedBlogs = blogs.filter((b) => b.id !== blog.id);
-        setBlogs(updatedBlogs);
+        await blogService.deleteBlog(blog)
+        const updatedBlogs = blogs.filter((b) => b.id !== blog.id)
+        setBlogs(updatedBlogs)
       }
     } catch (error) {
-      console.log("Error");
+      console.log('Error')
     }
-  };
-  
+  }
+
 
   if(!user){
     return <Login username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin} errorMessage={errorMessage}/>
@@ -106,7 +104,7 @@ const App = () => {
       <h2>{user.name} logged in
         <button onClick={handleLogout}>Logout</button>
       </h2>
-      {blogs.sort((a,b)=> b.likes - a.likes).map(blog =>
+      {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
         <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog}/>
       )}
       <h2>Add New Blog</h2>
