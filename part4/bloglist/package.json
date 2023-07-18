@@ -8,7 +8,8 @@
     "dev": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../../../2/luento/notes && npm run build && cp -r build ../../../3/luento/notes-backend",
     "lint": "eslint .",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "start:test": "NODE_ENV=test node index.js"
   },
   "author": "Muhammad Urwah",
   "license": "ISC",
