@@ -1,7 +1,7 @@
 import Notification from './Notification'
 const Login = ({ username, setUsername, handleLogin, password, setPassword, errorMessage }) => {
   return (
-    <form onSubmit={handleLogin}>
+    <form id='login-form' onSubmit={handleLogin}>
       <h2>Login</h2>
       <Notification message={errorMessage}/>
       <label htmlFor="username"> Username

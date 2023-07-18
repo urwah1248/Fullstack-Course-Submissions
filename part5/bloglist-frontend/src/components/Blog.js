@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, likeBlog, deleteBlog }) => {
+const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
   const [visible, setVisible] = useState(false)
 
   const showWhenVisible = { display: visible?'':'none' }
@@ -19,17 +19,16 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
     <div style={style}>
       <h4 style={{ display:'block', margin:0 }}>
         {blog.title} by {blog.author}
-        <button onClick={toggleVisiblity}>{visible?'Hide':'Show'}</button>
+        <button className='blog-toggle' onClick={toggleVisiblity}>{visible?'Hide':'Show'}</button>
       </h4>
       <div className='hidden' style={showWhenVisible}>
     URL: <a href={blog.url}>{blog.url}</a>
         <br />
-    Likes: {blog.likes} <button type="button" onClick={() => likeBlog(blog)}>Like</button>
+    Likes: <span className='likes'>{blog.likes}</span> <button className='like-button' type="button" onClick={() => likeBlog(blog)}>Like</button>
         <br />
-        {blog.user.name}
+        {blog.user && blog.user.name}
         <br />
-        <button style={{ backgroundColor:'red', color:'white' }} onClick={() => deleteBlog(blog)}>Delete</button>
-      </div>
+        {user.username===blog.user.username && <button style={{ backgroundColor:'red', color:'white' }} onClick={() => deleteBlog(blog)}>Delete</button>}</div>
     </div>
   )}
 

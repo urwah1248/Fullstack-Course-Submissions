@@ -28,7 +28,7 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )
-  }, [blogs])
+  }, [])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -58,7 +58,7 @@ const App = () => {
 
   const addBlog = (blog) => {
     blogService.addBlog(blog)
-    setBlogs([...blogs, blog])
+    setBlogs([...blogs, { user, ...blog }])
     setBlogMessage(blog)
   }
 
@@ -105,7 +105,7 @@ const App = () => {
         <button onClick={handleLogout}>Logout</button>
       </h2>
       {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog}/>
+        <Blog key={blog.id} user={user} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog}/>
       )}
       <h2>Add New Blog</h2>
       <Togglable label="New Blog">

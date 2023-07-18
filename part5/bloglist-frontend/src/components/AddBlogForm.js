@@ -15,7 +15,7 @@ const AddBlogForm = ({ addBlog }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form id='blog-form' onSubmit={handleSubmit}>
       <label htmlFor="title">Title:
         <input type="text" name="content" id="content" value={title} onChange={(e) => setTitle(e.target.value)} required/>
       </label>
